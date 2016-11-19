@@ -41,18 +41,18 @@ noble.on('discover', function(peripheral) {
 
     peripheral.on('servicesDiscover', function(services) {
 	console.log('on -> peripheral services discovered, for peripheral: ' + peripheral.advertisement.localName + '. Number of services: ' + services.length);
-	//console.log('  services: ' + services);
+	console.log('  The 11th service: ' + services[10]);
 
-	var serviceIndex = 0;
+	var serviceIndex = 10;
 
 	services[serviceIndex].on('includedServicesDiscover', function(includedServiceUuids) {
-	    //console.log('on -> service included services discovered ' + includedServiceUuids);
+	    console.log('on -> service included services discovered ' + includedServiceUuids);
 	    this.discoverCharacteristics();
 	});
 
 	services[serviceIndex].on('characteristicsDiscover', function(characteristics) {
 	    console.log('on -> service characteristics discovered, for peripheral: ' + peripheral.advertisement.localName + ', for serviceIndex: ' + serviceIndex + '. Number of characteristics: ' + characteristics.length);
-	    //console.log('  characteristics: ' + characteristics);
+	    console.log('  characteristics: ' + characteristics);
 
 	    var characteristicIndex = 0;
 
@@ -106,7 +106,24 @@ noble.on('discover', function(peripheral) {
 	    //characteristics[characteristicIndex].write(new Buffer('hello'));
 	    //characteristics[characteristicIndex].broadcast(true);
 	    //characteristics[characteristicIndex].notify(true);
-	    // characteristics[characteristicIndex].discoverDescriptors();
+	    //characteristics[characteristicIndex].discoverDescriptors();
+
+
+	    // subscribe to max-iPhone's characteristic[0] of service[10]
+	    /*
+	    characteristics[characteristicIndex].unsubscribe(function(error) {
+		console.log("--> subscribe to characteristic. Error if any:  " + error);
+	    });
+	    */
+	    /*
+	    characteristics[characteristicIndex].subscribe(function(error) {
+		console.log("--> subscribe to characteristic. Error if any:  " + error);
+	    });
+	    */
+	    characteristics[characteristicIndex].on('data', function(data, isNotification) {
+		console.log("--> subscribed data have update: " + data);
+	    });
+	    
 	});
 
 	
@@ -114,7 +131,8 @@ noble.on('discover', function(peripheral) {
 	
     });
 
-    if (peripheral.advertisement.localName == 'max-iPhone') {
+    // FIXME: temporary way to find max-iPhone 
+    if (peripheral.address == '4d:c7:df:bb:c7:fb') {
 	console.log("max-iPhone discovered. Peripheral information: " + peripheral)
 
 	noble.stopScanning();
