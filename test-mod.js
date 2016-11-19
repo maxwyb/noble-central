@@ -60,25 +60,25 @@ noble.on('discover', function(peripheral) {
 		console.log('on -> characteristic read ' + data + ' ' + isNotification);
 		console.log(data);
 
-		peripheral.disconnect();
+		//peripheral.disconnect();
 	    });
 
 	    characteristics[characteristicIndex].on('write', function() {
 		console.log('on -> characteristic write ');
 
-		peripheral.disconnect();
+		//peripheral.disconnect();
 	    });
 
 	    characteristics[characteristicIndex].on('broadcast', function(state) {
 		console.log('on -> characteristic broadcast ' + state);
 
-		peripheral.disconnect();
+		//peripheral.disconnect();
 	    });
 
 	    characteristics[characteristicIndex].on('notify', function(state) {
 		console.log('on -> characteristic notify ' + state);
 
-		peripheral.disconnect();
+		//peripheral.disconnect();
 	    });
 
 	    characteristics[characteristicIndex].on('descriptorsDiscover', function(descriptors) {
@@ -89,12 +89,12 @@ noble.on('discover', function(peripheral) {
 		descriptors[descriptorIndex].on('valueRead', function(data) {
 		    console.log('on -> descriptor value read ' + data);
 		    console.log(data);
-		    peripheral.disconnect();
+		    //peripheral.disconnect();
 		});
 
 		descriptors[descriptorIndex].on('valueWrite', function() {
 		    console.log('on -> descriptor value write ');
-		    peripheral.disconnect();
+		    //peripheral.disconnect();
 		});
 
 		descriptors[descriptorIndex].readValue();
@@ -114,12 +114,16 @@ noble.on('discover', function(peripheral) {
 	    characteristics[characteristicIndex].unsubscribe(function(error) {
 		console.log("--> subscribe to characteristic. Error if any:  " + error);
 	    });
-	    */
-	    /*
+
 	    characteristics[characteristicIndex].subscribe(function(error) {
 		console.log("--> subscribe to characteristic. Error if any:  " + error);
 	    });
 	    */
+
+	    characteristics[characteristicIndex].notify(true, function(error) {
+		console.log("--> notify(subscribe) to characteristic. Error if any: " + error);
+	    });
+	    
 	    characteristics[characteristicIndex].on('data', function(data, isNotification) {
 		console.log("--> subscribed data have update: " + data);
 	    });
