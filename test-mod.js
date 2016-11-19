@@ -41,6 +41,7 @@ noble.on('discover', function(peripheral) {
 
     peripheral.on('servicesDiscover', function(services) {
 	console.log('on -> peripheral services discovered, for peripheral: ' + peripheral.advertisement.localName + '. Number of services: ' + services.length);
+	// in our case of iOS peripheral data transfer, we find that the last service is actually the one we are broadcasting
 	console.log('  The 11th service: ' + services[10]);
 
 	var serviceIndex = 10;
@@ -54,8 +55,10 @@ noble.on('discover', function(peripheral) {
 	    console.log('on -> service characteristics discovered, for peripheral: ' + peripheral.advertisement.localName + ', for serviceIndex: ' + serviceIndex + '. Number of characteristics: ' + characteristics.length);
 	    console.log('  characteristics: ' + characteristics);
 
+	    // we need the 1st characteristic of the 11th service
 	    var characteristicIndex = 0;
 
+	    // automatically called when subscribed characteristics have update
 	    characteristics[characteristicIndex].on('read', function(data, isNotification) {
 		console.log('on -> characteristic read ' + data + ' ' + isNotification);
 		console.log(data);
@@ -110,6 +113,10 @@ noble.on('discover', function(peripheral) {
 
 
 	    // subscribe to max-iPhone's characteristic[0] of service[10]
+	    /* using `subscribe` or `notify` functions are both fine
+	    https://github.com/sandeepmistry/noble/issues/337
+	    https://github.com/sandeepmistry/noble/issues/407
+	    */
 	    /*
 	    characteristics[characteristicIndex].unsubscribe(function(error) {
 		console.log("--> subscribe to characteristic. Error if any:  " + error);
@@ -129,14 +136,13 @@ noble.on('discover', function(peripheral) {
 	    });
 	    
 	});
-
 	
 	services[serviceIndex].discoverIncludedServices();
 	
     });
 
     // FIXME: temporary way to find max-iPhone 
-    if (peripheral.address == '4d:c7:df:bb:c7:fb') {
+    if (peripheral.address == '59:de:d5:24:9f:75') {
 	console.log("max-iPhone discovered. Peripheral information: " + peripheral)
 
 	noble.stopScanning();
